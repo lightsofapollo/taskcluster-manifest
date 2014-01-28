@@ -16,7 +16,7 @@ clean:
 	-docker rmi docker-aws-provisioner
 	-docker rmi jobqueue
 	-cd aws-provisioner && node utils/cleanup-aws.js
-	rm -rf taskcluster-jobqueue aws-provisioner docker-worker
+	rm -rf taskcluster-jobqueue aws-provisioner docker-worker docker-services
 
 setup: clone
 	cd aws-provisioner && node utils/setup-aws.js
@@ -26,7 +26,6 @@ build-images: setup
 	make -C aws-provisioner docker-build
 
 run: build-images
-	docker run -d jobqueue
-	cd aws-provisioner; node server.js
+	./docker-services/bin/docker-services exec provisioner
 
 .PHONY: clone setup build-images clean
