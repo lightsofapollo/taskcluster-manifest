@@ -1,0 +1,10 @@
+{
+  "provisioner": {
+    "links": ["queue:queue"],
+    "image": "docker-aws-provisioner"
+  },
+
+  "queue": {
+    "image": "jobqueue"
+  }
+}
