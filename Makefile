@@ -1,31 +1,34 @@
-clone:
+projects:
+	@mkdir -p projects
+
 	# Clone the jobqueue from where-ever it lives
-	git clone https://github.com/jonasfj/taskcluster-jobqueue.git
+	cd projects && git clone https://github.com/jonasfj/taskcluster-jobqueue.git
 
 	# Clone the AWS provisioner
-	git clone https://github.com/taskcluster/aws-provisioner.git
+	cd projects && git clone https://github.com/taskcluster/aws-provisioner.git
+	cd projects/aws-provisioner && node utils/setup-aws.js
 
 	# Clone the docker-worker repository
-	git clone https://github.com/taskcluster/docker-worker.git
+	cd projects && git clone https://github.com/taskcluster/docker-worker.git
 
 	# Clone the docker-services repository
-	git clone https://github.com/taskcluster/docker-services.git
+	cd projects && git clone https://github.com/taskcluster/docker-services.git
 
-clean:
-	# Remove docker images
-	-docker rmi docker-aws-provisioner
-	-docker rmi jobqueue
-	-cd aws-provisioner && node utils/cleanup-aws.js
-	rm -rf taskcluster-jobqueue aws-provisioner docker-worker docker-services
 
-setup: clone
-	cd aws-provisioner && node utils/setup-aws.js
-
-build-images: setup
-	make -C taskcluster-jobqueue docker-build
-	make -C aws-provisioner docker-build
+build-images: projects
+	make -C projects/taskcluster-jobqueue docker-build
+	make -C projects/aws-provisioner docker-build
 
 run: build-images
-	./docker-services/bin/docker-services exec provisioner
+	./projects/docker-services/bin/docker-services exec provisioner
 
-.PHONY: clone setup build-images clean
+remove-images:
+	-docker ps -a | cut -f 1 -d ' ' | tail -n +2 | xargs docker rm
+	-docker rmi docker-aws-provisioner
+	-docker rmi jobqueue
+
+clean: remove-images
+	-cd projects/aws-provisioner && node utils/cleanup-aws.js
+	rm -rf projects
+
+.PHONY: build-images remove-images clean
