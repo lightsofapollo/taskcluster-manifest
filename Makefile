@@ -6,29 +6,29 @@ projects:
 
 	# Clone the AWS provisioner
 	cd projects && git clone https://github.com/taskcluster/aws-provisioner.git
-	cd projects/aws-provisioner && node utils/setup-aws.js
 
 	# Clone the docker-worker repository
 	cd projects && git clone https://github.com/taskcluster/docker-worker.git
 
-	# Clone the docker-services repository
-	cd projects && git clone https://github.com/taskcluster/docker-services.git
+configure: projects
+	-cd projects/aws-provisioner && node utils/setup-aws.js
+	-make -C projects/taskcluster-jobqueue database
 
+install: configure
+	sudo cp taskcluster-aws-provisioner.conf /etc/init/;
+	sudo cp taskcluster-queue.conf /etc/init/;
 
-build-images: projects
-	make -C projects/taskcluster-jobqueue docker-build
-	make -C projects/aws-provisioner docker-build
+run:
+	sudo service taskcluster-aws-provisioner start
+	sudo service taskcluster-queue start
 
-run: build-images
-	./projects/docker-services/bin/docker-services exec provisioner
+stop:
+	-sudo service taskcluster-aws-provisioner stop
+	-sudo service taskcluster-queue stop
 
-remove-images:
-	-docker ps -a | cut -f 1 -d ' ' | tail -n +2 | xargs docker rm
-	-docker rmi docker-aws-provisioner
-	-docker rmi jobqueue
-
-clean: remove-images
-	-cd projects/aws-provisioner && node utils/cleanup-aws.js
+clean: stop
+	cd projects/aws-provisioner && node utils/cleanup-aws.js
 	rm -rf projects
+	sudo rm -f /etc/init/taskcluster-aws-provisioner.conf /etc/init/taskcluster-queue.conf
 
-.PHONY: build-images remove-images clean
+.PHONY: install run stop clean configure
