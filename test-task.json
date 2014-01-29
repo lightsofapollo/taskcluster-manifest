@@ -1,0 +1,11 @@
+{
+  "command": ["echo 'Hello World';"],
+  "parameters": {
+    "hardware": {
+      "ami": "ami-ace67f9c"
+    },
+    "docker": {
+      "image": "ubuntu"
+    }
+  }
+}
