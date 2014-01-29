@@ -18,7 +18,7 @@ install: configure
 	sudo cp taskcluster-aws-provisioner.conf /etc/init/;
 	sudo cp taskcluster-queue.conf /etc/init/;
 
-run:
+start:
 	sudo service taskcluster-aws-provisioner start
 	sudo service taskcluster-queue start
 
@@ -31,4 +31,4 @@ clean: stop
 	rm -rf projects
 	sudo rm -f /etc/init/taskcluster-aws-provisioner.conf /etc/init/taskcluster-queue.conf
 
-.PHONY: install run stop clean configure
+.PHONY: install start stop clean configure
