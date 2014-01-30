@@ -4,8 +4,6 @@ if (!process.env.NGROK_AUTH) {
   process.exit(1);
 }
 
-console.log('XX');
-
 module.exports = {
   queue: { port: 8314 },
   provisioner: { port: 3000 },
