@@ -1,0 +1,6 @@
+#! /bin/bash -vex
+
+### XXX: should have usage description
+
+task=${1:-'test-task.json'}
+curl -X POST -d @$task http://localhost:8314/0.1.0/job/new

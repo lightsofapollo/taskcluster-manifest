@@ -1,0 +1,2 @@
+#! /bin/bash -vex
+./projects/docker-worker/docker_worker/bin/worker start jobs

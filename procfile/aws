@@ -1,0 +1,2 @@
+provisioner: ./bin/provisioner
+queue: ./bin/queue

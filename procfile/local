@@ -1,0 +1,3 @@
+provisioner: ./bin/provisioner
+queue: ./bin/queue
+worker: ./bin/worker
