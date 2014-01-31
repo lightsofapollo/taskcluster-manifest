@@ -1,0 +1,44 @@
+#! /bin/bash -e
+
+HOST_FILE=ngrok_hosts.env
+NGROK_SERVICES=./node_modules/.bin/ngrok-services
+
+usage() {
+  echo
+  echo "  Usage: ./bin/tunnel [command]"
+  echo
+  echo "  Commands:"
+  echo
+  echo "    start    launch ngrok-services and populate the $HOST_FILE file"
+  echo "    stop     stop ngrok-services and remove the $HOST_FILE file"
+  echo "    restart  ensure ngrok is running and create the $HOST_FILE"
+  echo
+}
+
+start() {
+  $NGROK_SERVICES start -f env > $HOST_FILE
+}
+
+restart() {
+  $NGROK_SERVICES restart -f env > $HOST_FILE
+}
+
+stop() {
+  rm -f $HOST_FILE
+  $NGROK_SERVICES stop
+}
+
+case "$1" in
+"restart")
+  restart
+  ;;
+"start")
+  start
+  ;;
+"stop")
+  stop
+  ;;
+*)
+  usage
+  ;;
+esac

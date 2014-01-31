@@ -1,2 +1,4 @@
 .vagrant/
 projects/*
+/*.env
+/.ngrok_services.pid
